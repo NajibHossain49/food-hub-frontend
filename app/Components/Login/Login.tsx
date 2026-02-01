@@ -43,7 +43,7 @@ function Login() {
           res.error.message || "Login failed. Please check your credentials.",
         );
       } else {
-        router.push("/");
+        router.push("/profile");
       }
     } catch (err: unknown) {
       setError("An unexpected error occurred. Please try again.");

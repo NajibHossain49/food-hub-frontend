@@ -1,0 +1,46 @@
+import { Category, Meal } from "@/app/types/meal";
+
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
+
+export async function getMeals(filters: Record<string, string> = {}) {
+  const queryParams = new URLSearchParams(filters).toString();
+  const url = `${BACKEND_URL}/api/meals${queryParams ? `?${queryParams}` : ""}`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch meals: ${response.statusText}`);
+  }
+
+  return response.json() as Promise<Meal[]>;
+}
+
+export async function getMealById(id: string) {
+  const response = await fetch(`${BACKEND_URL}/api/meals/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch meal: ${response.statusText}`);
+  }
+
+  return response.json() as Promise<Meal>;
+}
+
+export async function getCategories() {
+  const response = await fetch(`${BACKEND_URL}/api/meals/categories`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch categories: ${response.statusText}`);
+  }
+
+  return response.json() as Promise<Category[]>;
+}
