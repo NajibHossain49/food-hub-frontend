@@ -24,3 +24,17 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Remove number input arrows (spinner buttons) */
+.no-spinner {
+  /* Makes number input look like a normal text field */
+  appearance: textfield;
+}
+
+/* Remove spinner buttons in Chrome, Edge, Safari */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  /* Hides the up/down arrows */
+  appearance: none;
+  margin: 0;
+}
