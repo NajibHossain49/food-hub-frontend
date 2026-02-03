@@ -99,7 +99,7 @@ function OrderDetailPage() {
             {order.items.map((item, index) => (
               <div
                 key={index}
-                className="flex justify-between items-center bg-gray-50 p-4 rounded-md"
+                className="flex justify-between items-center text-gray-700 bg-gray-50 p-4 rounded-md"
               >
                 <div>
                   <p className="font-medium">{item.name}</p>
