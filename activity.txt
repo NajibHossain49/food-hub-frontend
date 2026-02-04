@@ -1,1 +1,2 @@
 Commit on 2026-02-05 00:00:00: fix: correct checkout form not validating delivery address on submit
+Commit on 2026-02-05 00:00:00: fix: resolve cart total not updating after removing last item
