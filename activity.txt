@@ -3,3 +3,4 @@ Commit on 2026-02-05 00:00:00: fix: resolve cart total not updating after removi
 Commit on 2026-02-05 00:00:00: style: adjust spacing in order details page for better readability
 Commit on 2026-02-05 00:00:00: refactor: extract loading spinner into reusable component
 Commit on 2026-02-06 00:00:00: feat: add loading skeletons to meal list and provider orders pages
+Commit on 2026-02-06 00:00:00: perf: implement lazy loading for all meal and provider images
