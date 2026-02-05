@@ -5,3 +5,4 @@ Commit on 2026-02-05 00:00:00: refactor: extract loading spinner into reusable c
 Commit on 2026-02-06 00:00:00: feat: add loading skeletons to meal list and provider orders pages
 Commit on 2026-02-06 00:00:00: perf: implement lazy loading for all meal and provider images
 Commit on 2026-02-06 00:00:00: fix: prevent double form submission on review form
+Commit on 2026-02-06 00:00:00: chore: remove unused CSS classes from tailwind config
