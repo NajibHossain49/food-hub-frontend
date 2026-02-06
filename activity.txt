@@ -8,3 +8,4 @@ Commit on 2026-02-06 00:00:00: fix: prevent double form submission on review for
 Commit on 2026-02-06 00:00:00: chore: remove unused CSS classes from tailwind config
 Commit on 2026-02-07 00:00:00: style: improve mobile responsiveness in provider dashboard menu section
 Commit on 2026-02-07 00:00:00: fix: correct status badge colors not matching design system
+Commit on 2026-02-07 00:00:00: refactor: consolidate repeated header navigation logic into layout
