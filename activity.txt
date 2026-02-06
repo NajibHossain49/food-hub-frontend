@@ -6,3 +6,4 @@ Commit on 2026-02-06 00:00:00: feat: add loading skeletons to meal list and prov
 Commit on 2026-02-06 00:00:00: perf: implement lazy loading for all meal and provider images
 Commit on 2026-02-06 00:00:00: fix: prevent double form submission on review form
 Commit on 2026-02-06 00:00:00: chore: remove unused CSS classes from tailwind config
+Commit on 2026-02-07 00:00:00: style: improve mobile responsiveness in provider dashboard menu section
