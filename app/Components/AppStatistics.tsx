@@ -1,23 +1,29 @@
 "use client";
 
-import type { AppStats } from "@/types/api";
+import { getAppStats } from "@/app/lib/api/home";
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 export default function AppStatistics() {
-  const [stats, setStats] = useState<AppStats | null>(null);
+  const [stats, setStats] = useState<{
+    totalMeals: number;
+    totalProviders: number;
+    totalUsers: number;
+    totalReviews: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const response = await fetch("/api/home/stats");
-        const data = await response.json();
+        const data = await getAppStats();
         setStats(data);
-      } catch (error) {
-        console.error("Failed to fetch stats:", error);
+      } catch (err: any) {
+        console.error("Failed to fetch stats:", err);
+        setError(err.message || "Could not load statistics");
       } finally {
         setLoading(false);
       }
@@ -26,44 +32,13 @@ export default function AppStatistics() {
     fetchStats();
   }, []);
 
-  const statsData = [
-    {
-      icon: "🍽️",
-      label: "Total Meals",
-      value: stats?.totalMeals || 0,
-      suffix: "+",
-      color: "from-orange-400 to-red-500",
-    },
-    {
-      icon: "🏪",
-      label: "Restaurant Partners",
-      value: stats?.totalProviders || 0,
-      suffix: "+",
-      color: "from-blue-400 to-indigo-500",
-    },
-    {
-      icon: "👥",
-      label: "Happy Customers",
-      value: stats?.totalUsers || 0,
-      suffix: "+",
-      color: "from-green-400 to-emerald-500",
-    },
-    {
-      icon: "⭐",
-      label: "Customer Reviews",
-      value: stats?.totalReviews || 0,
-      suffix: "+",
-      color: "from-yellow-400 to-orange-500",
-    },
-  ];
-
   // Animated counter component
   const AnimatedCounter = ({
     value,
-    suffix,
+    suffix = "+",
   }: {
     value: number;
-    suffix: string;
+    suffix?: string;
   }) => {
     const [count, setCount] = useState(0);
 
@@ -72,8 +47,8 @@ export default function AppStatistics() {
 
       let start = 0;
       const end = value;
-      const duration = 2000; // 2 seconds
-      const increment = end / (duration / 16); // 60fps
+      const duration = 2000;
+      const increment = end / (duration / 16);
 
       const timer = setInterval(() => {
         start += increment;
@@ -154,40 +129,87 @@ export default function AppStatistics() {
           </div>
         )}
 
-        {/* Statistics Grid */}
-        {!loading && stats && (
+        {/* Error State */}
+        {!loading && error && (
+          <div className="text-center py-12">
+            <p className="text-xl font-semibold">{error}</p>
+            <p className="mt-2 text-white/80">Please try again later.</p>
+          </div>
+        )}
+
+        {/* Statistics Grid - Fully dynamic from API */}
+        {!loading && !error && stats && (
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {statsData.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
-                className="bg-white/10 backdrop-blur-lg rounded-3xl p-10 text-center hover:bg-white/20 hover:-translate-y-2 transition-all duration-400 border border-white/20"
-              >
-                {/* Icon */}
-                <div
-                  className={`w-20 h-20 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-2xl`}
-                >
-                  {stat.icon}
-                </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0 }}
+              className="bg-white/10 backdrop-blur-lg rounded-3xl p-10 text-center hover:bg-white/20 hover:-translate-y-2 transition-all duration-400 border border-white/20"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-2xl">
+                🍽️
+              </div>
+              <div className="text-5xl font-bold mb-3">
+                <AnimatedCounter value={stats.totalMeals} suffix="+" />
+              </div>
+              <p className="text-lg text-white/90 font-medium">Total Meals</p>
+            </motion.div>
 
-                {/* Value */}
-                <div className="text-5xl font-bold mb-3">
-                  <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="bg-white/10 backdrop-blur-lg rounded-3xl p-10 text-center hover:bg-white/20 hover:-translate-y-2 transition-all duration-400 border border-white/20"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-2xl">
+                🏪
+              </div>
+              <div className="text-5xl font-bold mb-3">
+                <AnimatedCounter value={stats.totalProviders} suffix="+" />
+              </div>
+              <p className="text-lg text-white/90 font-medium">
+                Restaurant Partners
+              </p>
+            </motion.div>
 
-                {/* Label */}
-                <p className="text-lg text-white/90 font-medium">
-                  {stat.label}
-                </p>
-              </motion.div>
-            ))}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-white/10 backdrop-blur-lg rounded-3xl p-10 text-center hover:bg-white/20 hover:-translate-y-2 transition-all duration-400 border border-white/20"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-2xl">
+                👥
+              </div>
+              <div className="text-5xl font-bold mb-3">
+                <AnimatedCounter value={stats.totalUsers} suffix="+" />
+              </div>
+              <p className="text-lg text-white/90 font-medium">
+                Happy Customers
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0.45 }}
+              className="bg-white/10 backdrop-blur-lg rounded-3xl p-10 text-center hover:bg-white/20 hover:-translate-y-2 transition-all duration-400 border border-white/20"
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-2xl">
+                ⭐
+              </div>
+              <div className="text-5xl font-bold mb-3">
+                <AnimatedCounter value={stats.totalReviews} suffix="+" />
+              </div>
+              <p className="text-lg text-white/90 font-medium">
+                Customer Reviews
+              </p>
+            </motion.div>
           </div>
         )}
 
         {/* Bottom CTA */}
-        {!loading && stats && (
+        {!loading && !error && stats && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}

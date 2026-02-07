@@ -44,3 +44,28 @@ export async function getCategories() {
 
   return response.json() as Promise<Category[]>;
 }
+
+interface FeaturedMeal {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+}
+
+export async function getFeaturedMeals(): Promise<FeaturedMeal[]> {
+  const response = await fetch(`${BACKEND_URL}/api/home/featured-meals`, {
+    method: "GET",
+    credentials: "include", // if auth is needed (optional for public endpoint)
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch featured meals");
+  }
+
+  return response.json();
+}

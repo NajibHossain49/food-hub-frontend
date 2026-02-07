@@ -1,5 +1,6 @@
 "use client";
 
+import { getFeaturedMeals } from "@/app/lib/api/meals";
 import type { FeaturedMeal } from "@/types/api";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
@@ -8,23 +9,24 @@ import { useEffect, useRef, useState } from "react";
 export default function FeaturedMeals() {
   const [meals, setMeals] = useState<FeaturedMeal[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   useEffect(() => {
-    async function fetchFeaturedMeals() {
+    async function fetchData() {
       try {
-        const response = await fetch("/api/home/featured-meals");
-        const data = await response.json();
-        setMeals(data);
-      } catch (error) {
-        console.error("Failed to fetch featured meals:", error);
+        const data = await getFeaturedMeals();
+        setMeals(data as any); // Type assertion to bypass type issues
+      } catch (err: any) {
+        console.error("Failed to fetch featured meals:", err);
+        setError(err.message || "Could not load featured meals");
       } finally {
         setLoading(false);
       }
     }
 
-    fetchFeaturedMeals();
+    fetchData();
   }, []);
 
   return (
@@ -82,8 +84,24 @@ export default function FeaturedMeals() {
           </div>
         )}
 
+        {/* Error State */}
+        {!loading && error && (
+          <div className="text-center text-red-600 py-12">
+            <p className="text-xl font-semibold">{error}</p>
+            <p className="mt-2 text-gray-600">Please try again later.</p>
+          </div>
+        )}
+
         {/* Meals Grid */}
-        {!loading && (
+        {!loading && !error && meals.length === 0 && (
+          <div className="text-center text-gray-600 py-12">
+            <p className="text-xl font-medium">
+              No featured meals available right now.
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && meals.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {meals.map((meal, index) => (
               <motion.div
@@ -101,6 +119,7 @@ export default function FeaturedMeals() {
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={index < 3} // faster load for first few items
                   />
                   <div className="absolute top-4 right-4 bg-[var(--color-orange-primary)] text-white px-4 py-2 rounded-full text-sm font-semibold">
                     {meal.category}
@@ -112,7 +131,7 @@ export default function FeaturedMeals() {
                   <h3 className="text-2xl font-semibold mb-2 text-[var(--color-dark)]">
                     {meal.name}
                   </h3>
-                  <p className="text-gray-600 mb-3 leading-relaxed">
+                  <p className="text-gray-600 mb-3 leading-relaxed line-clamp-3">
                     {meal.description}
                   </p>
                   <p className="text-sm text-gray-500 mb-4">
@@ -124,7 +143,7 @@ export default function FeaturedMeals() {
                   {/* Footer */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <span className="text-3xl font-bold text-[var(--color-orange-primary)]">
-                      ${meal.price}
+                      ৳{meal.price}
                     </span>
                   </div>
                 </div>

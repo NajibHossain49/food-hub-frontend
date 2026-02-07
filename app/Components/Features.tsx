@@ -58,7 +58,7 @@ export default function Features() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-xl text-gray-600 leading-relaxed"
           >
-            We're committed to delivering not just food, but an exceptional experience with every order.
+            We&apos;re committed to delivering not just food, but an exceptional experience with every order.
           </motion.p>
         </div>
 

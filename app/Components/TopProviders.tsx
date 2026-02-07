@@ -1,5 +1,6 @@
 "use client";
 
+import { getTopProviders } from "@/app/lib/api/home"; // ← your existing function
 import type { TopProvider } from "@/types/api";
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -7,17 +8,18 @@ import { useEffect, useRef, useState } from "react";
 export default function TopProviders() {
   const [providers, setProviders] = useState<TopProvider[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   useEffect(() => {
     async function fetchTopProviders() {
       try {
-        const response = await fetch("/api/home/top-providers");
-        const data = await response.json();
+        const data = await getTopProviders();
         setProviders(data);
-      } catch (error) {
-        console.error("Failed to fetch top providers:", error);
+      } catch (err: any) {
+        console.error("Failed to fetch top providers:", err);
+        setError(err.message || "Could not load top providers");
       } finally {
         setLoading(false);
       }
@@ -26,7 +28,7 @@ export default function TopProviders() {
     fetchTopProviders();
   }, []);
 
-  // Generate a color for each provider based on their name
+  // Generate a color for each provider based on index
   const getProviderColor = (index: number) => {
     const colors = [
       "from-orange-400 to-red-500",
@@ -95,8 +97,24 @@ export default function TopProviders() {
           </div>
         )}
 
-        {/* Providers Grid */}
-        {!loading && (
+        {/* Error State */}
+        {!loading && error && (
+          <div className="text-center text-red-600 py-12">
+            <p className="text-xl font-semibold">{error}</p>
+            <p className="mt-2 text-gray-600">Please try again later.</p>
+          </div>
+        )}
+
+        {/* Providers Grid - Fully dynamic from API */}
+        {!loading && !error && providers.length === 0 && (
+          <div className="text-center text-gray-600 py-12">
+            <p className="text-xl font-medium">
+              No top providers available right now.
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && providers.length > 0 && (
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
             {providers.map((provider, index) => (
               <motion.div
@@ -132,7 +150,7 @@ export default function TopProviders() {
         )}
 
         {/* View All Button */}
-        {!loading && providers.length > 0 && (
+        {!loading && !error && providers.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
