@@ -10,3 +10,4 @@ Commit on 2026-02-07 00:00:00: style: improve mobile responsiveness in provider 
 Commit on 2026-02-07 00:00:00: fix: correct status badge colors not matching design system
 Commit on 2026-02-07 00:00:00: refactor: consolidate repeated header navigation logic into layout
 Commit on 2026-02-07 00:00:00: docs: add comments to cart context and checkout components
+Commit on 2026-02-08 00:00:00: fix: resolve mobile sidebar menu not closing after navigation
