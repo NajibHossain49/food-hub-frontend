@@ -33,7 +33,14 @@ function BecomeProviderPage() {
   }, [session, isPending, error, router]);
 
   if (isPending) {
-    return <div>Loading...</div>;
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-gray-50">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-orange-200 border-t-orange-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600 font-medium">
+          Loading... Please wait.
+        </p>
+      </div>
+    </div>;
   }
 
   if (error || !session?.user) {

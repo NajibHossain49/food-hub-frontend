@@ -159,3 +159,49 @@ export async function createCategory(data: {
 
   return response.json();
 }
+
+// Update user role (PATCH /api/admin/users/:id/role)
+export async function updateUserRole(
+  userId: string,
+  role: string,
+): Promise<void> {
+  const response = await fetch(
+    `${BACKEND_URL}/api/admin/users/${userId}/role`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ role }),
+    },
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to update user role");
+  }
+}
+
+// Update order status (PATCH /api/admin/orders/:id/status)
+export async function updateOrderStatus(
+  orderId: string,
+  status: string,
+): Promise<void> {
+  const response = await fetch(
+    `${BACKEND_URL}/api/admin/orders/${orderId}/status`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ status }),
+    },
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to update order status");
+  }
+}
