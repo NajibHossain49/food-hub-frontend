@@ -1,29 +1,56 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Custom Colors */
+  --color-orange-primary: #ff6b35;
+  --color-orange-light: #ff8c61;
+  --color-orange-dark: #e84a1c;
+  --color-cream: #fff8f0;
+  --color-dark: #1a1a1a;
+  --color-orange-primary: #ff6b35;
+  --color-orange-light: #ff8c61;
+  --color-orange-dark: #e84a1c;
+  --color-cream: #fff8f0;
+  --color-dark: #1a1a1a;
+
+
+  /* Font Families */
+  --font-family-outfit: var(--font-outfit), sans-serif;
+  --font-family-serif: var(--font-dm-serif), serif;
+
+  /* Custom Animations */
+  --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    font-family: var(--font-family-outfit);
+    overflow-x: hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+  }
+  
+  .animation-delay-400 {
+    animation-delay: 0.4s;
+  }
+  
+  .animation-delay-600 {
+    animation-delay: 0.6s;
+  }
+  
+  .animation-delay-800 {
+    animation-delay: 0.8s;
+  }
+
+  .bg-gradient-radial {
+    background-image: radial-gradient(var(--tw-gradient-stops));
+  }
 }
+
 
 /* Remove number input arrows (spinner buttons) */
 .no-spinner {

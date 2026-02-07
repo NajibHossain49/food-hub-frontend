@@ -1,5 +1,6 @@
 "use client";
 
+import Navigation from "@/app/Components/Navigation";
 import {
   AdminCategory,
   createCategory,
@@ -63,7 +64,7 @@ export default function AdminCategoriesPage() {
         router.replace("/Login");
         return;
       }
-      if (session.user.role !== "ADMIN") {
+      if ((session.user as any).role !== "ADMIN") {
         router.replace("/profile");
         return;
       }
@@ -73,7 +74,7 @@ export default function AdminCategoriesPage() {
   // Fetch categories
   useEffect(() => {
     async function fetchCategories() {
-      if (!session?.user || session.user.role !== "ADMIN") return;
+      if (!session?.user || (session.user as any).role !== "ADMIN") return;
 
       try {
         const data = await getAdminCategories();
@@ -86,7 +87,7 @@ export default function AdminCategoriesPage() {
       }
     }
 
-    if (!isPending && session?.user?.role === "ADMIN") {
+    if (!isPending && (session?.user as any)?.role === "ADMIN") {
       fetchCategories();
     }
   }, [session, isPending]);
@@ -203,7 +204,7 @@ export default function AdminCategoriesPage() {
     );
   }
 
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
     return null;
   }
 
@@ -218,224 +219,231 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">All Categories</h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Total categories: {categories.length}
-            </p>
+    <>
+      <Navigation />
+      <div className="mt-5 min-h-screen bg-gradient-to-br from-orange-50 to-red-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                All Categories
+              </h1>
+              <p className="mt-1 text-sm text-gray-600">
+                Total categories: {categories.length}
+              </p>
+            </div>
+
+            <button
+              onClick={openCreateModal}
+              className="px-5 py-2.5 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
+            >
+              + Add New Category
+            </button>
           </div>
 
-          <button
-            onClick={openCreateModal}
-            className="px-5 py-2.5 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors shadow-sm"
-          >
-            + Add New Category
-          </button>
+          {categories.length === 0 ? (
+            <div className="p-12 text-center text-gray-500">
+              No categories found in the system.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Created At
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Last Updated
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {categories.map((cat) => (
+                    <tr key={cat.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {cat.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(cat.createdAt).toLocaleString("en-GB", {
+                          dateStyle: "medium",
+                        })}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(cat.updatedAt).toLocaleString("en-GB", {
+                          dateStyle: "medium",
+                        })}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm space-x-4">
+                        <button
+                          onClick={() => openEditModal(cat)}
+                          className="text-blue-600 hover:text-blue-900 font-medium"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(cat)}
+                          className="text-red-600 hover:text-red-900 font-medium"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
-        {categories.length === 0 ? (
-          <div className="p-12 text-center text-gray-500">
-            No categories found in the system.
+        {/* Create Modal */}
+        {createModal.isOpen && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Add New Category
+              </h2>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category Name
+                </label>
+                <input
+                  type="text"
+                  value={createModal.newName}
+                  onChange={(e) =>
+                    setCreateModal({ ...createModal, newName: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="e.g. Korean, Mexican"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() =>
+                    setCreateModal({ ...createModal, isOpen: false })
+                  }
+                  className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
+                  disabled={createModal.submitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleCreateSubmit}
+                  disabled={
+                    createModal.submitting || !createModal.newName.trim()
+                  }
+                  className={`px-4 py-2 rounded-md text-sm font-medium text-white ${
+                    createModal.submitting || !createModal.newName.trim()
+                      ? "bg-orange-400 cursor-not-allowed"
+                      : "bg-orange-600 hover:bg-orange-700"
+                  }`}
+                >
+                  {createModal.submitting ? "Creating..." : "Create Category"}
+                </button>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created At
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Last Updated
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {categories.map((cat) => (
-                  <tr key={cat.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {cat.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(cat.createdAt).toLocaleString("en-GB", {
-                        dateStyle: "medium",
-                      })}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(cat.updatedAt).toLocaleString("en-GB", {
-                        dateStyle: "medium",
-                      })}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm space-x-4">
-                      <button
-                        onClick={() => openEditModal(cat)}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => openDeleteModal(cat)}
-                        className="text-red-600 hover:text-red-900 font-medium"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        )}
+
+        {/* Edit Modal (same as before) */}
+        {editModal.isOpen && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Edit Category
+              </h2>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category Name
+                </label>
+                <input
+                  type="text"
+                  value={editModal.newName}
+                  onChange={(e) =>
+                    setEditModal({ ...editModal, newName: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Enter category name"
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setEditModal({ ...editModal, isOpen: false })}
+                  className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
+                  disabled={editModal.submitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleEditSubmit}
+                  disabled={editModal.submitting || !editModal.newName.trim()}
+                  className={`px-4 py-2 rounded-md text-sm font-medium text-white ${
+                    editModal.submitting || !editModal.newName.trim()
+                      ? "bg-orange-400 cursor-not-allowed"
+                      : "bg-orange-600 hover:bg-orange-700"
+                  }`}
+                >
+                  {editModal.submitting ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteModal.isOpen && (
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+              <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                Confirm Delete
+              </h2>
+              <p className="text-gray-700 mb-6">
+                Are you sure you want to delete the category{" "}
+                <span className="font-semibold">
+                  &rdquo;{deleteModal.categoryName}&rdquo;
+                </span>
+                ?
+                <br />
+                This action cannot be undone.
+              </p>
+
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() =>
+                    setDeleteModal({ ...deleteModal, isOpen: false })
+                  }
+                  className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
+                  disabled={deleteModal.submitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  disabled={deleteModal.submitting}
+                  className={`px-4 py-2 rounded-md text-sm font-medium text-white ${
+                    deleteModal.submitting
+                      ? "bg-red-400 cursor-not-allowed"
+                      : "bg-red-600 hover:bg-red-700"
+                  }`}
+                >
+                  {deleteModal.submitting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Create Modal */}
-      {createModal.isOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Add New Category
-            </h2>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category Name
-              </label>
-              <input
-                type="text"
-                value={createModal.newName}
-                onChange={(e) =>
-                  setCreateModal({ ...createModal, newName: e.target.value })
-                }
-                className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder="e.g. Korean, Mexican"
-                autoFocus
-              />
-            </div>
-
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() =>
-                  setCreateModal({ ...createModal, isOpen: false })
-                }
-                className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
-                disabled={createModal.submitting}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleCreateSubmit}
-                disabled={createModal.submitting || !createModal.newName.trim()}
-                className={`px-4 py-2 rounded-md text-sm font-medium text-white ${
-                  createModal.submitting || !createModal.newName.trim()
-                    ? "bg-orange-400 cursor-not-allowed"
-                    : "bg-orange-600 hover:bg-orange-700"
-                }`}
-              >
-                {createModal.submitting ? "Creating..." : "Create Category"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Modal (same as before) */}
-      {editModal.isOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Edit Category
-            </h2>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category Name
-              </label>
-              <input
-                type="text"
-                value={editModal.newName}
-                onChange={(e) =>
-                  setEditModal({ ...editModal, newName: e.target.value })
-                }
-                className="w-full px-4 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                placeholder="Enter category name"
-              />
-            </div>
-
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setEditModal({ ...editModal, isOpen: false })}
-                className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
-                disabled={editModal.submitting}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleEditSubmit}
-                disabled={editModal.submitting || !editModal.newName.trim()}
-                className={`px-4 py-2 rounded-md text-sm font-medium text-white ${
-                  editModal.submitting || !editModal.newName.trim()
-                    ? "bg-orange-400 cursor-not-allowed"
-                    : "bg-orange-600 hover:bg-orange-700"
-                }`}
-              >
-                {editModal.submitting ? "Saving..." : "Save"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      {deleteModal.isOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">
-              Confirm Delete
-            </h2>
-            <p className="text-gray-700 mb-6">
-              Are you sure you want to delete the category{" "}
-              <span className="font-semibold">
-                &rdquo;{deleteModal.categoryName}&rdquo;
-              </span>
-              ?
-              <br />
-              This action cannot be undone.
-            </p>
-
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() =>
-                  setDeleteModal({ ...deleteModal, isOpen: false })
-                }
-                className="px-4 py-2 rounded-md text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300"
-                disabled={deleteModal.submitting}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                disabled={deleteModal.submitting}
-                className={`px-4 py-2 rounded-md text-sm font-medium text-white ${
-                  deleteModal.submitting
-                    ? "bg-red-400 cursor-not-allowed"
-                    : "bg-red-600 hover:bg-red-700"
-                }`}
-              >
-                {deleteModal.submitting ? "Deleting..." : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }

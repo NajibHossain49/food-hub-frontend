@@ -41,7 +41,7 @@ function BecomeProviderPage() {
   }
 
   // If user is already a provider → show message instead of form
-  if (session.user.role === "PROVIDER") {
+  if ((session.user as any).role === "PROVIDER") {
     return (
       <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50 py-12 px-4">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">

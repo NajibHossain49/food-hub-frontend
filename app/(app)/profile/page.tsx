@@ -5,6 +5,19 @@ import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+// Define custom user type that includes extra fields
+type CustomUser = {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  emailVerified?: boolean | null;
+  image?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  role: string; // "CUSTOMER" | "PROVIDER" | "ADMIN"
+  isActive: boolean;
+};
+
 function ProfilePage() {
   const router = useRouter();
 
@@ -59,7 +72,8 @@ function ProfilePage() {
     return null; // will be redirected by useEffect
   }
 
-  const user = session.user;
+  // Cast session.user to include custom fields
+  const user = session.user as CustomUser;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50 py-12 px-4">
@@ -87,7 +101,7 @@ function ProfilePage() {
                 <div className="w-32 h-32 rounded-full bg-linear-to-br from-orange-400 to-red-400 flex items-center justify-center border-4 border-orange-100 shadow-md">
                   <span className="text-4xl font-bold text-white">
                     {user.name?.charAt(0).toUpperCase() ||
-                      user.email.charAt(0).toUpperCase()}
+                      user.email?.charAt(0).toUpperCase()}
                   </span>
                 </div>
               )}

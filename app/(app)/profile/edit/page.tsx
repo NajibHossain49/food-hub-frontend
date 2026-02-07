@@ -26,8 +26,8 @@ function EditProfilePage() {
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       name: session?.user.name || "",
-      phone: session?.user.phone || "",
-      avatarUrl: session?.user.avatarUrl || "",
+      phone: "",
+      avatarUrl: "",
       image: session?.user.image || "",
     },
   });

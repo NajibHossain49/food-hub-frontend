@@ -1,5 +1,6 @@
 "use client";
 
+import Navigation from "@/app/Components/Navigation";
 import { AdminOrder, getAllOrders } from "@/app/lib/api/admin";
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
@@ -20,7 +21,7 @@ export default function AdminOrdersPage() {
         router.replace("/Login");
         return;
       }
-      if (session.user.role !== "ADMIN") {
+      if ((session.user as any).role !== "ADMIN") {
         router.replace("/profile");
         return;
       }
@@ -30,7 +31,7 @@ export default function AdminOrdersPage() {
   // Fetch orders
   useEffect(() => {
     async function fetchOrders() {
-      if (!session?.user || session.user.role !== "ADMIN") return;
+      if (!session?.user || (session.user as any).role !== "ADMIN") return;
 
       try {
         const data = await getAllOrders();
@@ -43,7 +44,7 @@ export default function AdminOrdersPage() {
       }
     }
 
-    if (!isPending && session?.user?.role === "ADMIN") {
+    if (!isPending && (session?.user as any)?.role === "ADMIN") {
       fetchOrders();
     }
   }, [session, isPending]);
@@ -56,7 +57,7 @@ export default function AdminOrdersPage() {
     );
   }
 
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
     return null;
   }
 
@@ -71,7 +72,9 @@ export default function AdminOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50 py-12 px-4 sm:px-6 lg:px-8">
+    <>
+    <Navigation/>
+    <div className="mt-5 min-h-screen bg-linear-to-br from-orange-50 to-red-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden">
         <div className="px-6 py-5 border-b border-gray-200">
           <h1 className="text-2xl font-bold text-gray-900">All Orders</h1>
@@ -166,5 +169,6 @@ export default function AdminOrdersPage() {
         )}
       </div>
     </div>
+    </>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { authClient } from "@/app/lib/auth-client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 function Login() {
@@ -13,7 +14,11 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signIn } = authClient;
+
+  // Get returnUrl from query params (e.g. ?returnUrl=/checkout?mealId=abc)
+  const returnUrl = searchParams.get("returnUrl");
 
   // Auto-clear error after 3 seconds
   useEffect(() => {
@@ -22,7 +27,6 @@ function Login() {
         setError("");
       }, 3000);
 
-      // Cleanup: clear timeout if component unmounts or error changes
       return () => clearTimeout(timer);
     }
   }, [error]);
@@ -43,10 +47,15 @@ function Login() {
           res.error.message || "Login failed. Please check your credentials.",
         );
       } else {
-        router.push("/profile");
+        // Redirect to returnUrl if present, otherwise go to home
+        if (returnUrl) {
+          router.push(decodeURIComponent(returnUrl));
+        } else {
+          router.push("/");
+        }
       }
     } catch (err: unknown) {
-      setError("An unexpected error occurred. Please try again.");
+      setError(`An unexpected error occurred. Please try again ${err}`);
     } finally {
       setLoading(false);
     }
@@ -57,10 +66,12 @@ function Login() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Welcome to FoodHub
-            </h1>
-            <p className="text-gray-600">Sign in to your account</p>
+            <Link href="/">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Welcome to FoodHub
+              </h1>
+              <p className="text-gray-600">Sign in to your account</p>
+            </Link>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">

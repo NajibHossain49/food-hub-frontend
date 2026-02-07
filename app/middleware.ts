@@ -8,11 +8,12 @@ export async function middleware(req: NextRequest) {
   if (pathname.startsWith("/admin")) {
     const session = await authClient.getSession(); // Server-side session check
 
-    if (!session?.user) {
+    if (!session?.data?.user) {
       return NextResponse.redirect(new URL("/Login", req.url));
     }
 
-    if (session.user.role !== "ADMIN") {
+    // Verify user has admin role (ensure 'role' property exists in user schema)
+    if (!session.data.user || (session.data.user as any).role !== "ADMIN") {
       return NextResponse.redirect(new URL("/profile", req.url));
     }
   }

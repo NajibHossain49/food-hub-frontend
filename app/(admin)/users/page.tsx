@@ -1,5 +1,6 @@
 "use client";
 
+import Navigation from "@/app/Components/Navigation";
 import { getAllUsers, updateUserStatus } from "@/app/lib/api/admin";
 import { authClient } from "@/app/lib/auth-client";
 import { AdminUser } from "@/app/types/admin";
@@ -25,7 +26,7 @@ function AdminUsersPage() {
         return;
       }
 
-      if (session.user.role !== "ADMIN") {
+      if ((session.user as any).role !== "ADMIN") {
         router.replace("/profile");
         return;
       }
@@ -34,7 +35,7 @@ function AdminUsersPage() {
 
   useEffect(() => {
     async function fetchUsers() {
-      if (!session?.user || session.user.role !== "ADMIN") return;
+      if (!session?.user || (session.user as any).role !== "ADMIN") return;
 
       try {
         const data = await getAllUsers();
@@ -47,7 +48,7 @@ function AdminUsersPage() {
       }
     }
 
-    if (!isPending && session?.user?.role === "ADMIN") {
+    if (!isPending && (session?.user as any)?.role === "ADMIN") {
       fetchUsers();
     }
   }, [session, isPending]);
@@ -92,12 +93,14 @@ function AdminUsersPage() {
     );
   }
 
-  if (!session?.user || session.user.role !== "ADMIN") {
+  if (!session?.user || (session.user as any).role !== "ADMIN") {
     return null;
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-orange-50 to-red-50 py-12 px-4">
+    <>
+    <Navigation/>
+    <div className="mt-5 min-h-screen bg-linear-to-br from-orange-50 to-red-50 py-12 px-4">
       <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg p-8 text-gray-800">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">All Users</h1>
 
@@ -208,6 +211,7 @@ function AdminUsersPage() {
         </div>
       )}
     </div>
+    </>
   );
 }
 

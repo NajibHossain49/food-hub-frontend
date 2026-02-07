@@ -87,7 +87,9 @@ export default function MealDetail() {
       setReviews(updated);
 
       resetReviewForm({
-        values: { mealId: id as string, rating: 5, comment: "" },
+        mealId: id as string,
+        rating: 5,
+        comment: "",
       });
     } catch (err: any) {
       const errorMessage = err.message || "Failed to submit review";
