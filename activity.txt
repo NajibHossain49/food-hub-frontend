@@ -13,3 +13,4 @@ Commit on 2026-02-07 00:00:00: docs: add comments to cart context and checkout c
 Commit on 2026-02-08 00:00:00: fix: resolve mobile sidebar menu not closing after navigation
 Commit on 2026-02-08 00:00:00: chore: clean up console logs and unused imports across frontend
 Commit on 2026-02-08 00:00:00: style: apply consistent button hover states throughout app
+Commit on 2026-02-08 00:00:00: chore: update README with current frontend setup instructions
