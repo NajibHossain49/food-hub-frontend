@@ -1,34 +1,38 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
-import Image from 'next/image'
-import type { FeaturedMeal } from '@/types/api'
+import type { FeaturedMeal } from "@/types/api";
+import { motion, useInView } from "framer-motion";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 export default function FeaturedMeals() {
-  const [meals, setMeals] = useState<FeaturedMeal[]>([])
-  const [loading, setLoading] = useState(true)
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const [meals, setMeals] = useState<FeaturedMeal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   useEffect(() => {
     async function fetchFeaturedMeals() {
       try {
-        const response = await fetch('/api/home/featured-meals')
-        const data = await response.json()
-        setMeals(data)
+        const response = await fetch("/api/home/featured-meals");
+        const data = await response.json();
+        setMeals(data);
       } catch (error) {
-        console.error('Failed to fetch featured meals:', error)
+        console.error("Failed to fetch featured meals:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchFeaturedMeals()
-  }, [])
+    fetchFeaturedMeals();
+  }, []);
 
   return (
-    <section id="featured-meals" className="py-24 px-6 bg-gradient-to-br from-[var(--color-cream)] to-white" ref={ref}>
+    <section
+      id="featured-meals"
+      className="py-24 px-6 bg-gradient-to-br from-[var(--color-cream)] to-white"
+      ref={ref}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -54,7 +58,8 @@ export default function FeaturedMeals() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="text-xl text-gray-600 leading-relaxed"
           >
-            Discover our chef&apos;s special selections, handpicked just for you today.
+            Discover our chef&apos;s special selections, handpicked just for you
+            today.
           </motion.p>
         </div>
 
@@ -62,7 +67,10 @@ export default function FeaturedMeals() {
         {loading && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-3xl overflow-hidden animate-pulse">
+              <div
+                key={i}
+                className="bg-white rounded-3xl overflow-hidden animate-pulse"
+              >
                 <div className="h-64 bg-gray-200" />
                 <div className="p-6 space-y-3">
                   <div className="h-4 bg-gray-200 rounded w-3/4" />
@@ -112,15 +120,12 @@ export default function FeaturedMeals() {
                       🏪 {meal.providerName}
                     </span>
                   </p>
-                  
+
                   {/* Footer */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                     <span className="text-3xl font-bold text-[var(--color-orange-primary)]">
                       ${meal.price}
                     </span>
-                    <button className="bg-[var(--color-orange-primary)] text-white px-6 py-3 rounded-full font-semibold hover:bg-[var(--color-orange-dark)] hover:scale-105 transition-all duration-300 shadow-lg shadow-[var(--color-orange-primary)]/30">
-                      Add to Cart
-                    </button>
                   </div>
                 </div>
               </motion.div>
@@ -129,5 +134,5 @@ export default function FeaturedMeals() {
         )}
       </div>
     </section>
-  )
+  );
 }

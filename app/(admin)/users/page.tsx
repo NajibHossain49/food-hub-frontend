@@ -91,7 +91,7 @@ function AdminUsersPage() {
       } else if (action === "role" && newRole) {
         await updateUserRole(userId, newRole);
         setUsers((prev) =>
-          prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
+          prev.map((u) => (u.id === userId ? { ...u, role: newRole as "CUSTOMER" | "PROVIDER" | "ADMIN" } : u))
         );
       }
     } catch (err: any) {
