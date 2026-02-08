@@ -4,6 +4,7 @@ import { authClient } from "@/app/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Signup() {
   const [name, setName] = useState("");
@@ -35,12 +36,16 @@ export default function Signup() {
 
     // Client-side validation
     if (password !== confirmPassword) {
-      setError("Passwords do not match.");
+      const msg = "Passwords do not match.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters long.");
+      const msg = "Password must be at least 8 characters long.";
+      setError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -54,12 +59,17 @@ export default function Signup() {
       });
 
       if (res.error) {
-        setError(res.error.message || "Sign up failed. Try again.");
+        const errorMessage = res.error.message || "Sign up failed. Try again.";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } else {
         router.push("/");
       }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
+    } catch (err: any) {
+      const errorMessage =
+        err.message || "Something went wrong. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
       console.error(err);
     } finally {
       setLoading(false);

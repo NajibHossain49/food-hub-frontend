@@ -22,14 +22,20 @@ function MyReviewsPage() {
   }, [session, isPending, error, router]);
 
   useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to load session");
+    }
+  }, [error]);
+
+  useEffect(() => {
     async function fetchReviews() {
       if (!session?.user) return;
 
       try {
         const data = await getMyReviews();
         setReviews(data);
-      } catch (err) {
-        toast.error("Failed to load reviews");
+      } catch (err: any) {
+        toast.error(err.message || "Failed to load reviews");
       } finally {
         setLoading(false);
       }

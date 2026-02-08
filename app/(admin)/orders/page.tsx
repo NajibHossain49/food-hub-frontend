@@ -9,6 +9,7 @@ import {
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";           
 
 export default function AdminOrdersPage() {
   const router = useRouter();
@@ -48,7 +49,9 @@ export default function AdminOrdersPage() {
         const data = await getAllOrders();
         setOrders(data);
       } catch (err: any) {
-        setError(err.message || "Failed to load orders");
+        const errorMessage = err.message || "Failed to load orders";
+        setError(errorMessage);
+        toast.error(errorMessage);           // Show toast on fetch error
         console.error(err);
       } finally {
         setLoading(false);
@@ -86,9 +89,11 @@ export default function AdminOrdersPage() {
       setOrders((prev) =>
         prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)),
       );
+
+      toast.success(`Order status changed to ${newStatus}`);
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Failed to update order status");
+      toast.error(err.message || "Failed to update order status");   // Replace alert
     } finally {
       setUpdatingOrderId(null);
     }

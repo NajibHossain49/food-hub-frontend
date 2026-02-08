@@ -1,13 +1,14 @@
 "use client";
 
 import {
-    getProviderProfile,
-    ProviderProfile,
-    updateProviderProfile,
+  getProviderProfile,
+  ProviderProfile,
+  updateProviderProfile,
 } from "@/app/lib/api/provider";
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast"; // Add this import
 
 export default function ProviderProfilePage() {
   const router = useRouter();
@@ -55,7 +56,9 @@ export default function ProviderProfilePage() {
           phone: data.phone || "",
         });
       } catch (err: any) {
-        setError(err.message || "Failed to load provider profile");
+        const errorMessage = err.message || "Failed to load provider profile";
+        setError(errorMessage);
+        toast.error(errorMessage); // Show toast on fetch error
         console.error(err);
       } finally {
         setLoading(false);
@@ -98,16 +101,19 @@ export default function ProviderProfilePage() {
         return;
       }
 
-      // Use your existing update function (assuming you added it)
       const updated = await updateProviderProfile(payload);
       setProfile(updated);
       setSuccess(true);
       setIsEditing(false);
 
+      toast.success("Profile updated successfully");
+
       // Auto-hide success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
-      setError(err.message || "Failed to update profile");
+      const errorMessage = err.message || "Failed to update profile";
+      setError(errorMessage);
+      toast.error(errorMessage); // Show toast on update error
     } finally {
       setSubmitting(false);
     }

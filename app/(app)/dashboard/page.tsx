@@ -4,6 +4,7 @@ import { getProviderProfile, ProviderProfile } from "@/app/lib/api/provider";
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast"; // Add this import
 
 export default function ProviderDashboardPage() {
   const router = useRouter();
@@ -37,7 +38,9 @@ export default function ProviderDashboardPage() {
         const data = await getProviderProfile();
         setProfile(data);
       } catch (err: any) {
-        setError(err.message || "Failed to load provider profile");
+        const errorMessage = err.message || "Failed to load provider profile";
+        setError(errorMessage);
+        toast.error(errorMessage); // Show toast on fetch error
         console.error(err);
       } finally {
         setLoading(false);

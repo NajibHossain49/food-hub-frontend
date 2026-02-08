@@ -11,6 +11,7 @@ import {
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";         
 
 export default function AdminCategoriesPage() {
   const router = useRouter();
@@ -80,7 +81,9 @@ export default function AdminCategoriesPage() {
         const data = await getAdminCategories();
         setCategories(data);
       } catch (err: any) {
-        setError(err.message || "Failed to load categories");
+        const errorMessage = err.message || "Failed to load categories";
+        setError(errorMessage);
+        toast.error(errorMessage);           // Show toast on fetch error
         console.error(err);
       } finally {
         setLoading(false);
@@ -107,20 +110,17 @@ export default function AdminCategoriesPage() {
     try {
       const newCat = await createCategory({ name: trimmedName });
 
-      // Optimistic add (prepend to list)
       setCategories((prev) => [newCat, ...prev]);
 
       setCreateModal({ isOpen: false, newName: "", submitting: false });
+      toast.success("Category created successfully");
     } catch (err: any) {
-      alert(err.message || "Failed to create category");
+      toast.error(err.message || "Failed to create category");   // Replace alert
     } finally {
       setCreateModal((prev) => ({ ...prev, submitting: false }));
     }
   };
 
-  // ... (keep your existing openEditModal, handleEditSubmit, openDeleteModal, handleDeleteConfirm functions)
-
-  // Open edit modal
   const openEditModal = (category: AdminCategory) => {
     setEditModal({
       isOpen: true,
@@ -156,14 +156,14 @@ export default function AdminCategoriesPage() {
         newName: "",
         submitting: false,
       });
+      toast.success("Category updated successfully");
     } catch (err: any) {
-      alert(err.message || "Failed to update category");
+      toast.error(err.message || "Failed to update category");   // Replace alert
     } finally {
       setEditModal((prev) => ({ ...prev, submitting: false }));
     }
   };
 
-  // Open delete modal
   const openDeleteModal = (category: AdminCategory) => {
     setDeleteModal({
       isOpen: true,
@@ -189,8 +189,9 @@ export default function AdminCategoriesPage() {
         categoryName: "",
         submitting: false,
       });
+      toast.success("Category deleted successfully");
     } catch (err: any) {
-      alert(err.message || "Failed to delete category");
+      toast.error(err.message || "Failed to delete category");   // Replace alert
     } finally {
       setDeleteModal((prev) => ({ ...prev, submitting: false }));
     }
@@ -354,7 +355,7 @@ export default function AdminCategoriesPage() {
           </div>
         )}
 
-        {/* Edit Modal (same as before) */}
+        {/* Edit Modal */}
         {editModal.isOpen && (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">

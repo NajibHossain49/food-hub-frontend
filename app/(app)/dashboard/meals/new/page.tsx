@@ -7,6 +7,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { Category } from "@/app/types/meal";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast"; // Add this import
 
 export default function NewMealPage() {
   const router = useRouter();
@@ -42,7 +43,9 @@ export default function NewMealPage() {
         const data = await getCategories();
         setCategories(data);
       } catch (err: any) {
-        setError("Failed to load categories");
+        const errorMessage = err.message || "Failed to load categories";
+        setError(errorMessage);
+        toast.error(errorMessage); // Show toast on fetch error
         console.error(err);
       } finally {
         setLoadingCategories(false);
@@ -94,11 +97,15 @@ export default function NewMealPage() {
       await createProviderMeal(payload);
 
       setSuccess(true);
+      toast.success("Meal created successfully");
+
       setTimeout(() => {
         router.push("/dashboard/meals");
       }, 1500);
     } catch (err: any) {
-      setError(err.message || "Failed to create meal");
+      const errorMessage = err.message || "Failed to create meal";
+      setError(errorMessage);
+      toast.error(errorMessage); // Show toast on submit error
     } finally {
       setSubmitting(false);
     }
@@ -116,7 +123,9 @@ export default function NewMealPage() {
 
   return (
     <div className="p-6 lg:p-10 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Add New Meal</h1>
+      <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
+        Add New Meal
+      </h1>
 
       <div className="bg-white rounded-xl shadow-md p-8">
         {success && (
@@ -238,7 +247,7 @@ export default function NewMealPage() {
               name="isAvailable"
               checked={formData.isAvailable}
               onChange={handleChange}
-              className="h-5 w-5 text-orange-600  border-gray-300 rounded focus:ring-orange-500"
+              className="h-5 w-5 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
             />
             <label className="ml-2 text-sm font-medium text-gray-700">
               Available for order
@@ -250,7 +259,7 @@ export default function NewMealPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-2.5 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" 
+              className="px-6 py-2.5 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
               disabled={submitting}
             >
               Cancel

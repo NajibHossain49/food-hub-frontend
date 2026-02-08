@@ -5,6 +5,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { Order } from "@/app/types/order";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -20,14 +21,21 @@ function OrderDetailPage() {
   }, [session, isPending, error, router]);
 
   useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to load session");
+    }
+  }, [error]);
+
+  useEffect(() => {
     async function fetchOrder() {
       if (!session?.user || !id) return;
 
       try {
         const data = await getOrderById(id);
         setOrder(data);
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
+        toast.error(err.message || "Failed to load order details");
         router.push("/profile/orders");
       } finally {
         setLoading(false);

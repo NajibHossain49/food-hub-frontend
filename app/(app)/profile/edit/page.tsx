@@ -49,6 +49,12 @@ function EditProfilePage() {
     }
   }, [session, isPending, error, router]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to load session");
+    }
+  }, [error]);
+
   if (isPending) {
     return <div>Loading...</div>;
   }
@@ -64,8 +70,11 @@ function EditProfilePage() {
       await updateProfile(data);
       toast.success("Profile updated successfully");
       router.push("/profile"); // Redirect back to profile
-    } catch (err) {
-      setSubmitError("Failed to update profile. Please try again.");
+    } catch (err: any) {
+      const errorMessage =
+        err.message || "Failed to update profile. Please try again.";
+      toast.error(errorMessage);
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

@@ -5,6 +5,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { Order } from "@/app/types/order";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function OrdersPage() {
   const router = useRouter();
@@ -19,14 +20,21 @@ function OrdersPage() {
   }, [session, isPending, error, router]);
 
   useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to load session");
+    }
+  }, [error]);
+
+  useEffect(() => {
     async function fetchOrders() {
       if (!session?.user) return;
 
       try {
         const data = await getMyOrders();
         setOrders(data);
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
+        toast.error(err.message || "Failed to load orders");
       } finally {
         setLoading(false);
       }

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Navigation from "@/app/Components/Navigation";
@@ -7,6 +6,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { Category, Meal } from "@/app/types/meal";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast"; // Add this import
 
 export default function MealsPage() {
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -23,11 +23,16 @@ export default function MealsPage() {
         const cats = await getCategories();
         setCategories(cats);
 
-        const params = selectedCategory ? { category: selectedCategory } : undefined;
+        const params = selectedCategory
+          ? { category: selectedCategory }
+          : undefined;
         const mealData = await getMeals(params);
         setMeals(mealData);
-      } catch (err) {
+      } catch (err: any) {
+        const errorMessage =
+          err.message || "Failed to load meals or categories";
         console.error(err);
+        toast.error(errorMessage); // Show toast on loading error
       } finally {
         setLoading(false);
       }

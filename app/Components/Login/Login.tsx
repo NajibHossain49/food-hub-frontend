@@ -5,6 +5,7 @@ import { authClient } from "@/app/lib/auth-client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -43,9 +44,10 @@ function Login() {
       });
 
       if (res.error) {
-        setError(
-          res.error.message || "Login failed. Please check your credentials.",
-        );
+        const errorMessage =
+          res.error.message || "Login failed. Please check your credentials.";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } else {
         // Redirect to returnUrl if present, otherwise go to home
         if (returnUrl) {
@@ -55,7 +57,12 @@ function Login() {
         }
       }
     } catch (err: unknown) {
-      setError(`An unexpected error occurred. Please try again ${err}`);
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -153,11 +160,11 @@ function Login() {
               </button>
             </div>
 
-            {error && (
+            {/* {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm animate-fade-in">
                 {error}
               </div>
-            )}
+            )} */}
 
             <button
               type="submit"

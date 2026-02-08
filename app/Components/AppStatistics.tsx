@@ -3,6 +3,7 @@
 import { getAppStats } from "@/app/lib/api/home";
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AppStatistics() {
   const [stats, setStats] = useState<{
@@ -23,7 +24,9 @@ export default function AppStatistics() {
         setStats(data);
       } catch (err: any) {
         console.error("Failed to fetch stats:", err);
-        setError(err.message || "Could not load statistics");
+        const errorMessage = err.message || "Could not load statistics";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setLoading(false);
       }

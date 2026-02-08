@@ -32,6 +32,12 @@ function BecomeProviderPage() {
     }
   }, [session, isPending, error, router]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to load session");
+    }
+  }, [error]);
+
   if (isPending) {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-gray-50">
       <div className="text-center">
@@ -77,8 +83,11 @@ function BecomeProviderPage() {
       await createProviderProfile(data);
       toast.success("Provider profile created successfully");
       router.push("/profile");
-    } catch (err) {
-      setSubmitError("Failed to create provider profile. Please try again.");
+    } catch (err: any) {
+      const errorMessage =
+        err.message || "Failed to create provider profile. Please try again.";
+      toast.error(errorMessage);
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

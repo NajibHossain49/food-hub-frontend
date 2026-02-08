@@ -4,6 +4,7 @@
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 // Define custom user type that includes extra fields
 type CustomUser = {
@@ -29,6 +30,12 @@ function ProfilePage() {
       router.replace("/Login");
     }
   }, [session, isPending, error, router]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || "Failed to load user session");
+    }
+  }, [error]);
 
   if (isPending) {
     return (

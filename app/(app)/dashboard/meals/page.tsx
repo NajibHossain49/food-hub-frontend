@@ -6,6 +6,7 @@ import { authClient } from "@/app/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast"; // Add this import
 
 export default function ProviderMealsPage() {
   const router = useRouter();
@@ -36,7 +37,9 @@ export default function ProviderMealsPage() {
         const data = await getProviderMeals();
         setMeals(data);
       } catch (err: any) {
-        setError(err.message || "Failed to load your meals");
+        const errorMessage = err.message || "Failed to load your meals";
+        setError(errorMessage);
+        toast.error(errorMessage); // Show toast on fetch error
         console.error(err);
       } finally {
         setLoading(false);

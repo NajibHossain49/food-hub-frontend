@@ -6,6 +6,7 @@ import { authClient } from "@/app/lib/auth-client";
 import { getAllUsers, updateUserStatus, updateUserRole } from "@/app/lib/api/admin";
 import { AdminUser } from "@/app/types/admin";
 import Navigation from "@/app/Components/Navigation";
+import toast from "react-hot-toast";           // Add this import
 
 function AdminUsersPage() {
   const router = useRouter();
@@ -43,8 +44,10 @@ function AdminUsersPage() {
         const data = await getAllUsers();
         const filtered = data.filter((u) => u.id !== session.user.id);
         setUsers(filtered);
-      } catch (err) {
+      } catch (err: any) {
+        const errorMessage = err.message || "Failed to load users";
         console.error(err);
+        toast.error(errorMessage);           // Show toast on fetch error
       } finally {
         setLoading(false);
       }
@@ -88,15 +91,17 @@ function AdminUsersPage() {
         setUsers((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, isActive: newStatus } : u))
         );
+        toast.success(`User ${newStatus ? "activated" : "deactivated"} successfully`);
       } else if (action === "role" && newRole) {
         await updateUserRole(userId, newRole);
         setUsers((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, role: newRole as "CUSTOMER" | "PROVIDER" | "ADMIN" } : u))
         );
+        toast.success(`User role changed to ${newRole}`);
       }
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Failed to update");
+      toast.error(err.message || "Failed to update user");   // Replace alert
     } finally {
       setUpdatingUserId(null);
     }

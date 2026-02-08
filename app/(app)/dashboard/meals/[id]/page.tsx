@@ -11,6 +11,7 @@ import { authClient } from "@/app/lib/auth-client";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast"; // Add this import
 
 export default function MealDetailPage() {
   const { id } = useParams();
@@ -57,7 +58,8 @@ export default function MealDetailPage() {
 
   useEffect(() => {
     async function fetchMeal() {
-      if (!id || !session?.user || (session.user as any).role !== "PROVIDER") return;
+      if (!id || !session?.user || (session.user as any).role !== "PROVIDER")
+        return;
 
       try {
         const data = await getProviderMealById(id as string);
@@ -75,7 +77,9 @@ export default function MealDetailPage() {
           },
         }));
       } catch (err: any) {
-        setError(err.message || "Failed to load meal details");
+        const errorMessage = err.message || "Failed to load meal details";
+        setError(errorMessage);
+        toast.error(errorMessage); // Show toast on fetch error
         console.error(err);
       } finally {
         setLoading(false);
@@ -130,8 +134,10 @@ export default function MealDetailPage() {
         },
         submitting: false,
       });
+
+      toast.success("Meal updated successfully");
     } catch (err: any) {
-      alert(err.message || "Failed to update meal");
+      toast.error(err.message || "Failed to update meal"); // Replace alert
     } finally {
       setEditModal((prev) => ({ ...prev, submitting: false }));
     }
@@ -147,9 +153,10 @@ export default function MealDetailPage() {
 
     try {
       await deleteMeal(meal.id);
+      toast.success("Meal deleted successfully");
       router.push("/dashboard/meals");
     } catch (err: any) {
-      alert(err.message || "Failed to delete meal");
+      toast.error(err.message || "Failed to delete meal"); // Replace alert
     }
   };
 

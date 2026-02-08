@@ -50,6 +50,7 @@ export default function MealDetail() {
         setMeal(data);
       } catch (err) {
         console.error(err);
+        toast.error("Failed to load meal details");
         router.push("/meals");
       } finally {
         setLoading(false);
@@ -69,6 +70,7 @@ export default function MealDetail() {
         setReviews(data);
       } catch (err) {
         console.error(err);
+        toast.error("Failed to load reviews");
       } finally {
         setLoadingReviews(false);
       }

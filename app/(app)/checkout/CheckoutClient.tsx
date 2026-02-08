@@ -126,6 +126,7 @@ function CheckoutPage() {
       router.push("/profile");
     } catch (err) {
       setSubmitError("Failed to place order. Please try again.");
+      toast.error("Failed to place order. Please try again."); // ← Added: show error via toast
     } finally {
       setIsSubmitting(false);
     }
