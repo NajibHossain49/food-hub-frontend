@@ -4,7 +4,7 @@ const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
 export async function updateProfile(data: UpdateProfileData) {
-  const response = await fetch(`${BACKEND_URL}/api/users/me`, {
+  const response = await fetch(`/api/users/me`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function updateProfile(data: UpdateProfileData) {
 }
 
 export async function createProviderProfile(data: CreateProviderData) {
-  const response = await fetch(`${BACKEND_URL}/api/users/me/provider-profile`, {
+  const response = await fetch(`/api/users/me/provider-profile`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

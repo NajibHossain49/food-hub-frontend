@@ -4,7 +4,7 @@ const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
 export async function createReview(data: CreateReviewData): Promise<Review> {
-  const response = await fetch(`${BACKEND_URL}/api/reviews/`, {
+  const response = await fetch(`/api/reviews/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export async function createReview(data: CreateReviewData): Promise<Review> {
 }
 
 export async function getReviewsForMeal(mealId: string): Promise<Review[]> {
-  const response = await fetch(`${BACKEND_URL}/api/reviews/meal/${mealId}`, {
+  const response = await fetch(`/api/reviews/meal/${mealId}`, {
     method: "GET",
     credentials: "include", // even though public, include for consistency
   });
@@ -35,7 +35,7 @@ export async function getReviewsForMeal(mealId: string): Promise<Review[]> {
 }
 
 export async function getMyReviews(): Promise<Review[]> {
-  const response = await fetch(`${BACKEND_URL}/api/reviews/me`, {
+  const response = await fetch(`/api/reviews/me`, {
     method: "GET",
     credentials: "include",
   });
@@ -48,7 +48,7 @@ export async function getMyReviews(): Promise<Review[]> {
 }
 
 export async function deleteReview(id: string): Promise<void> {
-  const response = await fetch(`${BACKEND_URL}/api/reviews/${id}`, {
+  const response = await fetch(`/api/reviews/${id}`, {
     method: "DELETE",
     credentials: "include",
   });

@@ -67,7 +67,7 @@ export interface AdminOrder {
 }
 
 export async function getAllOrders(): Promise<AdminOrder[]> {
-  const response = await fetch(`${BACKEND_URL}/api/admin/orders`, {
+  const response = await fetch(`/api/admin/orders`, {
     method: "GET",
     credentials: "include",
   });
@@ -88,7 +88,7 @@ export interface AdminCategory {
 }
 
 export async function getAdminCategories(): Promise<AdminCategory[]> {
-  const response = await fetch(`${BACKEND_URL}/api/admin/categories`, {
+  const response = await fetch(`/api/admin/categories`, {
     method: "GET",
     credentials: "include",
   });
@@ -106,7 +106,7 @@ export async function updateCategory(
   data: { name: string },
 ): Promise<AdminCategory> {
   const response = await fetch(
-    `${BACKEND_URL}/api/admin/categories/${categoryId}`,
+    `/api/admin/categories/${categoryId}`,
     {
       method: "PUT",
       headers: {
@@ -127,7 +127,7 @@ export async function updateCategory(
 
 export async function deleteCategory(categoryId: string): Promise<void> {
   const response = await fetch(
-    `${BACKEND_URL}/api/admin/categories/${categoryId}`,
+    `/api/admin/categories/${categoryId}`,
     {
       method: "DELETE",
       credentials: "include",
@@ -143,7 +143,7 @@ export async function deleteCategory(categoryId: string): Promise<void> {
 export async function createCategory(data: {
   name: string;
 }): Promise<AdminCategory> {
-  const response = await fetch(`${BACKEND_URL}/api/admin/categories`, {
+  const response = await fetch(`/api/admin/categories`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -166,7 +166,7 @@ export async function updateUserRole(
   role: string,
 ): Promise<void> {
   const response = await fetch(
-    `${BACKEND_URL}/api/admin/users/${userId}/role`,
+    `/api/admin/users/${userId}/role`,
     {
       method: "PATCH",
       headers: {
@@ -189,7 +189,7 @@ export async function updateOrderStatus(
   status: string,
 ): Promise<void> {
   const response = await fetch(
-    `${BACKEND_URL}/api/admin/orders/${orderId}/status`,
+    `/api/admin/orders/${orderId}/status`,
     {
       method: "PATCH",
       headers: {

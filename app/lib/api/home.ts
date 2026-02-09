@@ -9,7 +9,7 @@ export interface AppStats {
 }
 
 export async function getAppStats(): Promise<AppStats> {
-  const response = await fetch(`${BACKEND_URL}/api/home/stats`, {
+  const response = await fetch(`/api/home/stats`, {
     method: "GET",
     credentials: "include", // optional, remove if public
     headers: {
@@ -31,7 +31,7 @@ export interface TopProvider {
 }
 
 export async function getTopProviders(): Promise<TopProvider[]> {
-  const response = await fetch(`${BACKEND_URL}/api/home/top-providers`, {
+  const response = await fetch(`/api/home/top-providers`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

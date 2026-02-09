@@ -6,7 +6,7 @@ const BACKEND_URL =
 export async function createOrder(
   data: CreateOrderData,
 ): Promise<OrderResponse> {
-  const response = await fetch(`${BACKEND_URL}/api/orders/`, {
+  const response = await fetch(`/api/orders/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export async function createOrder(
 }
 
 export async function getMyOrders(): Promise<Order[]> {
-  const response = await fetch(`${BACKEND_URL}/api/orders/`, {
+  const response = await fetch(`/api/orders/`, {
     method: "GET",
     credentials: "include",
   });
@@ -36,7 +36,7 @@ export async function getMyOrders(): Promise<Order[]> {
 }
 
 export async function getOrderById(id: string): Promise<Order> {
-  const response = await fetch(`${BACKEND_URL}/api/orders/${id}`, {
+  const response = await fetch(`/api/orders/${id}`, {
     method: "GET",
     credentials: "include",
   });

@@ -13,7 +13,7 @@ export interface ProviderProfile {
 }
 
 export async function getProviderProfile(): Promise<ProviderProfile> {
-  const response = await fetch(`${BACKEND_URL}/api/provider/profile`, {
+  const response = await fetch(`/api/provider/profile`, {
     method: "GET",
     credentials: "include", // sends auth cookie
   });
@@ -29,7 +29,7 @@ export async function getProviderProfile(): Promise<ProviderProfile> {
 export async function updateProviderProfile(
   profileData: Partial<ProviderProfile>,
 ): Promise<ProviderProfile> {
-  const response = await fetch(`${BACKEND_URL}/api/provider/profile`, {
+  const response = await fetch(`/api/provider/profile`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export interface ProviderMeal {
 }
 
 export async function getProviderMeals(): Promise<ProviderMeal[]> {
-  const response = await fetch(`${BACKEND_URL}/api/provider/meals`, {
+  const response = await fetch(`/api/provider/meals`, {
     method: "GET",
     credentials: "include", // sends auth cookie
   });
@@ -75,7 +75,7 @@ export async function getProviderMeals(): Promise<ProviderMeal[]> {
 export async function getProviderMealById(
   mealId: string,
 ): Promise<ProviderMeal> {
-  const response = await fetch(`${BACKEND_URL}/api/provider/meals/${mealId}`, {
+  const response = await fetch(`/api/provider/meals/${mealId}`, {
     method: "GET",
     credentials: "include", // sends auth cookie
   });
@@ -91,7 +91,7 @@ export async function getProviderMealById(
 export async function createProviderMeal(
   mealData: Partial<ProviderMeal>,
 ): Promise<ProviderMeal> {
-  const response = await fetch(`${BACKEND_URL}/api/provider/meals`, {
+  const response = await fetch(`/api/provider/meals`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export async function updateMeal(
   mealId: string,
   mealData: Partial<ProviderMeal>,
 ): Promise<ProviderMeal> {
-  const response = await fetch(`${BACKEND_URL}/api/provider/meals/${mealId}`, {
+  const response = await fetch(`/api/provider/meals/${mealId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -130,7 +130,7 @@ export async function updateMeal(
 }
 
 export async function deleteMeal(mealId: string): Promise<void> {
-  const response = await fetch(`${BACKEND_URL}/api/provider/meals/${mealId}`, {
+  const response = await fetch(`/api/provider/meals/${mealId}`, {
     method: "DELETE",
     credentials: "include", // sends auth cookie
   });

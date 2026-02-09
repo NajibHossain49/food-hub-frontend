@@ -5,7 +5,7 @@ const BACKEND_URL =
 
 export async function getMeals(filters: Record<string, string> = {}) {
   const queryParams = new URLSearchParams(filters).toString();
-  const url = `${BACKEND_URL}/api/meals${queryParams ? `?${queryParams}` : ""}`;
+  const url = `/api/meals${queryParams ? `?${queryParams}` : ""}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -20,7 +20,7 @@ export async function getMeals(filters: Record<string, string> = {}) {
 }
 
 export async function getMealById(id: string) {
-  const response = await fetch(`${BACKEND_URL}/api/meals/${id}`, {
+  const response = await fetch(`/api/meals/${id}`, {
     method: "GET",
     credentials: "include",
   });
@@ -33,7 +33,7 @@ export async function getMealById(id: string) {
 }
 
 export async function getCategories() {
-  const response = await fetch(`${BACKEND_URL}/api/meals/categories`, {
+  const response = await fetch(`/api/meals/categories`, {
     method: "GET",
     credentials: "include",
   });
@@ -55,7 +55,7 @@ interface FeaturedMeal {
 }
 
 export async function getFeaturedMeals(): Promise<FeaturedMeal[]> {
-  const response = await fetch(`${BACKEND_URL}/api/home/featured-meals`, {
+  const response = await fetch(`/api/home/featured-meals`, {
     method: "GET",
     credentials: "include", // if auth is needed (optional for public endpoint)
     headers: {
