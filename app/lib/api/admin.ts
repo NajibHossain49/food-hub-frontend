@@ -4,7 +4,7 @@ const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
 export async function getAllUsers(): Promise<AdminUser[]> {
-  const response = await fetch(`${BACKEND_URL}/api/admin/users`, {
+  const response = await fetch(`/api/admin/users`, {
     method: "GET",
     credentials: "include", // For auth cookies
   });
@@ -20,7 +20,7 @@ export async function updateUserStatus(
   userId: string,
   isActive: boolean,
 ): Promise<void> {
-  const response = await fetch(`${BACKEND_URL}/api/admin/users/${userId}`, {
+  const response = await fetch(`/api/admin/users/${userId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
